@@ -1,5 +1,5 @@
-import router from '../router'
-import { db } from '../plugins/firebase'
+import router from '../../router'
+import { db } from '../../plugins/firebase'
 
 export default {
   namespaced: true,

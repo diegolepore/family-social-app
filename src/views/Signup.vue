@@ -5,6 +5,12 @@
     </div>
     <form @submit.prevent="signUp()" class="bg-white rounded shadow-md px-8 pt-6 pb-8 mb-4">
       <div class="mb-4">
+        <input class="px-3 py-2 border rounded w-full" type="text" placeholder="Name" v-model="name" />
+      </div>
+      <div class="mb-4">
+        <input class="px-3 py-2 border rounded w-full" type="text" placeholder="Lastname" v-model="lastname" />
+      </div>
+      <div class="mb-4">
         <input class="px-3 py-2 border rounded w-full" type="email" placeholder="Email" v-model="email" />
       </div>
       <div class="mb-4">
@@ -27,6 +33,8 @@ export default {
   name: "Signup",
   data() {
     return {
+      name: "",
+      lastname: "",
       email: "",
       pass: "",
       passConfirm: ""
@@ -36,6 +44,8 @@ export default {
     ...mapActions("auth", ["CREATE_USER"]),
     signUp() {
       const newUserPayload = {
+        name: this.name,
+        lastname: this.lastname,
         email: this.email,
         pass: this.pass
       };

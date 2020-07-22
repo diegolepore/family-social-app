@@ -1,5 +1,5 @@
-import router from '../router'
-import { db, auth } from '../plugins/firebase'
+import router from '../../router'
+import { db, auth } from '../../plugins/firebase'
 
 export default {
   namespaced: true,
@@ -23,26 +23,14 @@ export default {
   },
   actions: {
 
-    CREATE_USER({commit}, payload) {
-      auth.createUserWithEmailAndPassword(payload.email, payload.pass)
+    GET_USER({commit}, res) {
+
+      const { uid } = res.user
+      db.collection('users').doc(uid).get()
         .then((res) => {
-          console.log(res)
-          const newUser = {
-            email: res.user.email,
-            uid: res.user.uid
-          }
-
-          commit('SET_USER', newUser)
-          router.push({name: 'Inicio'})
-
-          // db.collection(res.user.email).add({
-          //   name: "Todo de ejemplo"
-          // }).then(() => {
-          //   commit('SET_USER', newUser)
-          //   router.push({name: 'Inicio'})
-          // }).catch((err) => {
-          //   console.log(err)
-          // })
+          const user = { ...res.data() }
+          commit('SET_USER', user)
+          router.push({name: 'Inicio'}) 
         })
         .catch((err) => {
           console.error(err)
@@ -50,16 +38,25 @@ export default {
         })
     },
 
-    LOG_IN({commit}, payload) {
+    CREATE_USER({commit, dispatch}, payload) {
+      auth.createUserWithEmailAndPassword(payload.email, payload.pass)
+        .then((res) => {
+          db.collection('users').doc(res.user.uid).set({ ...payload, uid: res.user.uid }).then(() => {
+            dispatch('GET_USER', res)
+          }).catch((err) => {
+            commit('SET_ERROR', err)
+          })
+        })
+        .catch((err) => {
+          console.error(err)
+          commit('SET_ERROR', err)
+        })
+    },
+
+    LOG_IN({commit, dispatch}, payload) {
       auth.signInWithEmailAndPassword(payload.email, payload.pass)
         .then((res) => {
-          console.log(res)
-          const newUser = {
-            email: res.user.email,
-            uid: res.user.uid
-          }
-          commit('SET_USER', newUser)
-          router.push({name: 'Inicio'}) // Change this
+          dispatch('GET_USER', res)
         })
         .catch((err) => {
           console.error(err)
