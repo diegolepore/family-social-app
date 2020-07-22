@@ -17,7 +17,7 @@
         <button :disabled="!isValid" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="submit">Sign up</button>
       </div>
     </form>
-    <p>{{ GET_AUTH_ITEM('error') }}</p>
+    <p class="text-red-500 text-xs italic">{{ GET_AUTH_ITEM('error') }}</p>
   </div>
 </template>
 

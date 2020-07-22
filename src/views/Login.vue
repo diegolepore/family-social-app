@@ -21,11 +21,12 @@
         </a>
       </div>
     </form>
+    <p class="text-red-500 text-xs italic">{{ GET_AUTH_ITEM('error') }}</p>
   </div>
 </template>
 
 <script>
-import { mapActions } from "vuex";
+import { mapActions, mapGetters } from "vuex";
 export default {
   name: "Login",
   data() {
@@ -43,6 +44,9 @@ export default {
       };
       this.LOG_IN(userPayload);
     }
+  },
+  computed: {
+    ...mapGetters("auth", ["GET_AUTH_ITEM"]),
   }
 };
 </script>
