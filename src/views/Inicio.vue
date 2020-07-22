@@ -1,8 +1,5 @@
 <template>
   <div class="w-full md:w-9/12">
-    <router-link :to="{name: 'AddPost'}">
-      <button>Add post</button>
-    </router-link>
     <ul>
       <li v-for="(post, index) in posts" :key="index">
         <h1>{{ post.title }}</h1>
