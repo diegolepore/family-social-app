@@ -16,11 +16,25 @@ const routes = [
     path: '/edit-post:id',
     name: 'EditPost',
     component: () => import(/* webpackChunkName: "edit-post" */ '../views/EditPost.vue'),
+    meta: { requiresAuth: true }
   },
   {
     path: '/add-post',
     name: 'AddPost',
     component: () => import(/* webpackChunkName: "add-post" */ '../views/AddPost.vue'),
+    meta: { requiresAuth: true }
+  },
+  {
+    path: '/users',
+    name: 'Users',
+    component: () => import(/* webpackChunkName: "users" */ '../views/Users.vue'),
+    meta: { requiresAuth: true }
+  },
+  {
+    path: '/user-profile',
+    name: 'UserProfile',
+    component: () => import(/* webpackChunkName: "user-profile" */ '../views/UserProfile.vue'),
+    meta: { requiresAuth: true }
   },
   {
     path: '/signup',

@@ -18,6 +18,12 @@
           <router-link class="block mt-4 lg:inline-block lg:mt-0 text-teal-200 hover:text-white mr-4" v-if="IS_USER_ACTIVE" :to="{name: 'AddPost'}">
             Add post
           </router-link>
+          <router-link class="block mt-4 lg:inline-block lg:mt-0 text-teal-200 hover:text-white mr-4" v-if="IS_USER_ACTIVE" :to="{name: 'Users'}">
+            Users
+          </router-link>
+          <router-link class="block mt-4 lg:inline-block lg:mt-0 text-teal-200 hover:text-white mr-4" v-if="IS_USER_ACTIVE" :to="{name: 'UserProfile'}">
+            Profile
+          </router-link>
           <router-link class="block mt-4 lg:inline-block lg:mt-0 text-teal-200 hover:text-white mr-4" v-if="!IS_USER_ACTIVE" to="/signup">
             Sign up
           </router-link>
@@ -26,7 +32,14 @@
           </router-link>
         </div>
         <div class="lg:flex">
-          <a v-if="displayUserEmail" class="flex items-center text-sm lg:mx-6 block text-teal-200">{{ displayUserEmail }}</a>
+          <a v-if="user" class="flex items-center text-sm lg:mx-6 block text-teal-200">
+            <img
+            class="h-8 w-8 rounded-full object-cover mr-3 border"
+            :src="user.photo"
+            :alt="`${user.name} profile photo`" />
+
+            {{ user.email }}
+          </a>
           <button class="flex items-center text-sm px-3 py-2 leading-none border rounded text-white border-white hover:border-transparent hover:bg-blue-800 mt-4 lg:mt-0" v-if="IS_USER_ACTIVE" @click="LOG_OUT">
             <svg class="mr-2" width="24" height="24" xmlns="http://www.w3.org/2000/svg"><g><rect fill="none" id="canvas_background" height="402" width="582" y="-1" x="-1"/></g><g><path fill="#ffffff" id="svg_1" d="m12,10c1.1,0 2,-0.9 2,-2l0,-4c0,-1.1 -0.9,-2 -2,-2s-2,0.9 -2,2l0,4c0,1.1 0.9,2 2,2z"/><path fill="#ffffff" id="svg_2" d="m19.1,4.9l0,0c-0.3,-0.3 -0.6,-0.4 -1.1,-0.4c-0.8,0 -1.5,0.7 -1.5,1.5c0,0.4 0.2,0.8 0.4,1.1l0,0c0,0 0,0 0,0c0,0 0,0 0,0c1.3,1.3 2,3 2,4.9c0,3.9 -3.1,7 -7,7s-7,-3.1 -7,-7c0,-1.9 0.8,-3.7 2.1,-4.9l0,0c0.3,-0.3 0.5,-0.7 0.5,-1.1c0,-0.8 -0.7,-1.5 -1.5,-1.5c-0.4,0 -0.8,0.2 -1.1,0.4l0,0c-1.8,1.8 -2.9,4.3 -2.9,7.1c0,5.5 4.5,10 10,10s10,-4.5 10,-10c0,-2.8 -1.1,-5.3 -2.9,-7.1z"/></g></svg>
             Log out
@@ -38,7 +51,7 @@
 </template>
 
 <script>
-  import { mapActions, mapGetters } from "vuex";
+  import { mapActions, mapGetters, mapState } from "vuex";
   export default {
     data() {
       return {
@@ -49,12 +62,8 @@
       ...mapActions("auth", ["LOG_OUT"])
     },
     computed: {
+      ...mapState("auth", ["user"]),
       ...mapGetters("auth", ["IS_USER_ACTIVE", "GET_AUTH_ITEM"]),
-      displayUserEmail() {
-        if(this.GET_AUTH_ITEM("user")) {
-          return this.GET_AUTH_ITEM("user").email || "";
-        }
-      }
     }
   }
 </script>

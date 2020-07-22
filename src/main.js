@@ -10,10 +10,8 @@ import "@/assets/styles/main.css";
 
 auth.onAuthStateChanged((user)=> {
   if (user) {
-    console.log(user)
-    store.commit('auth/SET_USER', {email: user.email, uid: user.uid})
+    store.dispatch('auth/GET_USER', { user })
   } else {
-    console.log(user)
     store.commit('auth/SET_USER', null)
   }
 

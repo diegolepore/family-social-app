@@ -47,7 +47,8 @@ export default {
         name: this.name,
         lastname: this.lastname,
         email: this.email,
-        pass: this.pass
+        pass: this.pass,
+        photo: 'https://www.biography.com/.image/t_share/MTY2MzU3Nzk2OTM2MjMwNTkx/elon_musk_royal_society.jpg'
       };
 
       this.CREATE_USER(newUserPayload);

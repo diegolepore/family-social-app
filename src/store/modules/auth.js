@@ -24,7 +24,6 @@ export default {
   actions: {
 
     GET_USER({commit}, res) {
-
       const { uid } = res.user
       db.collection('users').doc(uid).get()
         .then((res) => {
