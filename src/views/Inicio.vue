@@ -1,7 +1,5 @@
 <template>
-  <div>
-    <h1>Inicio</h1>
-    <p>bienvenido {{ displayUserEmail }}</p>
+  <div class="w-full md:w-9/12">
     <router-link :to="{name: 'AddPost'}">
       <button>Add post</button>
     </router-link>
@@ -23,7 +21,7 @@
 
 <script>
 // @ is an alias to /src
-import { mapActions, mapState, mapGetters } from "vuex";
+import { mapActions, mapState } from "vuex";
 
 export default {
   name: "Inicio",
@@ -34,11 +32,7 @@ export default {
     this.GET_POSTS();
   },
   computed: {
-    ...mapState("posts", ["posts"]),
-    ...mapGetters("auth", ["GET_AUTH_ITEM"]),
-    displayUserEmail() {
-      return this.GET_AUTH_ITEM("user").email || "";
-    }
+    ...mapState("posts", ["posts"])
   }
 };
 </script>
