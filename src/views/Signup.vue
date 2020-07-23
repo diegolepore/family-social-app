@@ -19,7 +19,7 @@
       <div class="mb-4">
         <input class="px-3 py-2 border rounded w-full" type="password" placeholder="Repeat password" v-model="passConfirm" />
       </div>
-      <div class="flex justify-right">
+      <div class="flex justify-end">
         <button :disabled="!isValid" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="submit">Sign up</button>
       </div>
     </form>

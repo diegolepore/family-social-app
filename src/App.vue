@@ -1,7 +1,7 @@
 <template>
-  <div id="app" class="bg-gray-200 h-screen">
+  <div id="app">
     <Nav />
-    <div class="flex justify-center p-10">
+    <div class="flex justify-center p-10 overflow-auto">
         <router-view />
     </div>
   </div>
