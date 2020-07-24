@@ -29,6 +29,9 @@
 
 <script>
 import { mapActions, mapGetters } from "vuex";
+import unsplash, { toJson } from "../plugins/unsplash"
+import axios from 'axios'
+
 export default {
   name: "Signup",
   data() {
@@ -37,7 +40,8 @@ export default {
       lastname: "",
       email: "",
       pass: "",
-      passConfirm: ""
+      passConfirm: "",
+      bannerPhoto: ""
     };
   },
   methods: {
@@ -48,11 +52,30 @@ export default {
         lastname: this.lastname,
         email: this.email,
         pass: this.pass,
-        photo: 'https://www.biography.com/.image/t_share/MTY2MzU3Nzk2OTM2MjMwNTkx/elon_musk_royal_society.jpg'
+        photo: 'https://www.biography.com/.image/t_share/MTY2MzU3Nzk2OTM2MjMwNTkx/elon_musk_royal_society.jpg',
+        bannerPhoto: this.bannerPhoto,
+        followingNum: 0,
+        followersNum: 0
       };
 
       this.CREATE_USER(newUserPayload);
     }
+  },
+  created() {
+
+    axios({
+      method: 'get',
+      url: 'https://api.unsplash.com/photos/random',
+      params: {
+        query: 'europe',
+        orientation: 'landscape',
+        client_id: '_dUNgJYVixJ-k02_PwL2JFmZWF-Qyh0c2MqJvhcCb-o'
+      }
+    })
+    .then((res)=>{
+      this.bannerPhoto = res.data.urls.small
+    })
+    .catch((err) => { console.error(err) })
   },
   computed: {
     ...mapGetters("auth", ["GET_AUTH_ITEM"]),
