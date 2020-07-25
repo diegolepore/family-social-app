@@ -24,12 +24,15 @@ export default {
   actions: {
 
     GET_USER({commit}, res) {
-      const { uid } = res.user
+      const { user, isAuthProcess } = res
+      const { uid } = user
       db.collection('users').doc(uid).get()
         .then((res) => {
           const user = { ...res.data() }
           commit('SET_USER', user)
-          router.push({name: 'Inicio'}) 
+          if (isAuthProcess) {
+            router.push({name: 'Inicio'}) 
+          }
         })
         .catch((err) => {
           console.error(err)
@@ -41,7 +44,7 @@ export default {
       auth.createUserWithEmailAndPassword(payload.email, payload.pass)
         .then((res) => {
           db.collection('users').doc(res.user.uid).set({ ...payload, uid: res.user.uid }).then(() => {
-            dispatch('GET_USER', res)
+            dispatch('GET_USER', {...res, isAuthProcess: true })
           }).catch((err) => {
             commit('SET_ERROR', err)
           })
@@ -55,7 +58,7 @@ export default {
     LOG_IN({commit, dispatch}, payload) {
       auth.signInWithEmailAndPassword(payload.email, payload.pass)
         .then((res) => {
-          dispatch('GET_USER', res)
+          dispatch('GET_USER', {...res, isAuthProcess: true })
         })
         .catch((err) => {
           console.error(err)

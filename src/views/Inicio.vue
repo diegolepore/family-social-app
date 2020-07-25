@@ -23,13 +23,15 @@ import { mapActions, mapState } from "vuex";
 export default {
   name: "Inicio",
   methods: {
-    ...mapActions("posts", ["GET_POSTS", "DELETE_POST"])
+    ...mapActions("posts", ["GET_POSTS", "DELETE_POST"]),
+    ...mapActions("users", ["GET_USERS"]),
   },
   created() {
     this.GET_POSTS();
+    this.GET_USERS("all-users");
   },
   computed: {
-    ...mapState("posts", ["posts"])
-  }
+    ...mapState("posts", ["posts"]),
+  },
 };
 </script>
