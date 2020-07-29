@@ -22,10 +22,10 @@ export default {
     }
   },
   actions: {
-    GET_USERS({commit, rootState}, payload) {
-      const currentUserUid = rootState.auth.user.uid
-
+    GET_USERS({commit, dispatch, rootState}, payload) {
+      
       db.collection('users').orderBy("name").limit(50).get().then((res) => {
+        const currentUserUid = rootState.auth.user.uid
         let allUsers = []
         let usersFollowing = []
         let notFollowingUsers = []
@@ -52,6 +52,9 @@ export default {
         } else if (payload == 'all-users') {
           commit('SET_ALL_USERS', allUsers)
         }
+
+        dispatch('posts/GET_POSTS', null, {root:true})
+
       }).catch((err) => {
         console.error(err)
       })
@@ -79,14 +82,6 @@ export default {
         .catch((err) => {
           console.error(err)
         })
-
-
-        // await dispatch('auth/GET_USER', { ...rootState.auth, isAuthProcess: false }, { root: true })
-
-        // await dispatch('GET_USERS', 'users')
-        // await dispatch('GET_USERS', 'users-following')
-        
-    
     }
   },
   getters: {}

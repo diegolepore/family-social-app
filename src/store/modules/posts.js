@@ -23,15 +23,17 @@ export default {
   actions: {
     GET_POSTS({commit, rootGetters}) {
       const posts = []
-      const { email } = rootGetters['auth/GET_AUTH_ITEM']('user')
+      const { email, following } = rootGetters['auth/GET_AUTH_ITEM']('user')
 
-      db.collection('posts').where('user.email', '==', email).get()
+      db.collection('posts').get()
         .then((res) => {
           res.forEach((doc) => {
-            console.log(doc.data())
-            const data = doc.data()
-            data.id = doc.id
-            posts.push(data)
+            if( following.includes(doc.data().user.uid) ) {
+              console.log(doc.data())
+              const data = doc.data()
+              data.id = doc.id
+              posts.push(data)
+            }
           })
 
           commit('SET_POSTS', posts)
@@ -54,11 +56,13 @@ export default {
     },
 
     ADD_POST({commit, rootGetters}, post) {
-      const { email, uid } = rootGetters['auth/GET_AUTH_ITEM']('user')
+      const { uid, photo, name, lastname } = rootGetters['auth/GET_AUTH_ITEM']('user')
       const formattedPost = {
         ...post,
         user: {
-          email,
+          name,
+          lastname,
+          photo,
           uid
         }
       }

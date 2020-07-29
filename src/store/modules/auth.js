@@ -31,7 +31,7 @@ export default {
           const user = { ...res.data() }
           commit('SET_USER', user)
           if (isAuthProcess) {
-            router.push({name: 'Inicio'}) 
+            router.push({name: 'Inicio'})
           }
         })
         .catch((err) => {
@@ -59,6 +59,7 @@ export default {
       auth.signInWithEmailAndPassword(payload.email, payload.pass)
         .then((res) => {
           dispatch('GET_USER', {...res, isAuthProcess: true })
+          dispatch('users/GET_USERS', 'all-users', {root:true});
         })
         .catch((err) => {
           console.error(err)
