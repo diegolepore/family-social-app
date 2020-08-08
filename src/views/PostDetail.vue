@@ -10,7 +10,8 @@
 
       <div class="mx-5">
         <img
-          src="https://images.unsplash.com/photo-1580473492355-7e6e76d2e3a0?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1978&q=80"
+          :v-if="post.mainImage"
+          :src="post.mainImage"
         />
       </div>
 

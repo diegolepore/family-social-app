@@ -23,12 +23,12 @@ export default {
   actions: {
     GET_POSTS({commit, rootGetters}) {
       const posts = []
-      const { email, following } = rootGetters['auth/GET_AUTH_ITEM']('user')
+      const { following, uid } = rootGetters['auth/GET_AUTH_ITEM']('user')
 
       db.collection('posts').get()
         .then((res) => {
           res.forEach((doc) => {
-            if( following.includes(doc.data().user.uid) ) {
+            if( following.includes(doc.data().user.uid) || doc.data().user.uid === uid ) {
               console.log(doc.data())
               const data = doc.data()
               data.id = doc.id
@@ -66,6 +66,9 @@ export default {
           uid
         }
       }
+
+      console.log("Formattedpost: ", formattedPost)
+
       db.collection('posts').add(formattedPost)
       .then((res) => {
         console.log('Post successfully added!', res)
