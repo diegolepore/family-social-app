@@ -88,7 +88,7 @@ export default {
         followers: [],
         followingsLength: 0,
         followersLength: 0,
-        postsLiked: []
+        likedPosts: []
       };
 
       this.CREATE_USER(newUserPayload);

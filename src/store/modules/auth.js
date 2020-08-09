@@ -19,7 +19,18 @@ export default {
     RESET_USER_DATA(state) {
       state.user = {}
       state.error = ''
-    }
+    },
+
+    SET_LIKED_POST(state, postId) {
+      state.user.likedPosts.push(postId)
+    },
+
+    REMOVE_LIKED_POST(state, postId) {
+      const index = state.user.likedPosts.indexOf(postId)
+      const likedPosts = state.user.likedPosts
+
+      likedPosts.splice(index, 1)
+    },
   },
   actions: {
 

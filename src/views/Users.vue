@@ -56,6 +56,9 @@
                 </div>
               </div>
             </div>
+
+            <div>Liked posts: {{ user.likedPosts }}</div>
+
           </div>
         </li>
       </ul>
@@ -115,6 +118,8 @@
             <div>
               <strong class="text-black">{{ user.followingsLength }}</strong> Siguiendo
             </div>
+
+            <div>Liked posts: {{ user.likedPosts }}</div>
           </div>
         </div>
       </li>

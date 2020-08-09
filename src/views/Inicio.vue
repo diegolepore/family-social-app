@@ -10,9 +10,7 @@
         class="h-48 lg:h-auto lg:w-48 flex-none bg-cover bg-center bg-no-repeat rounded-t lg:rounded-t-none lg:rounded-l text-center overflow-hidden"
         :style="`background-image: url('${post.mainImage}')`"
         :title="post.title"
-      >
-      
-      </div>
+      ></div>
 
       <div
         :class="[post.mainImage ? 'lg:border-l-0 lg:rounded-l-none lg:rounded-b-none' : '']"
@@ -37,11 +35,19 @@
             </div>
 
             <div class="flex">
-              <div class="flex items-center mr-2 text-gray-700 text-sm mr-3 cursor-pointer">
-                <svg fill="none" viewBox="0 0 24 24"  class="w-4 h-4 mr-1" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
-                  </svg>
-                <span>0</span>
+              <div
+                @click="LIKE_POST(post.id)"
+                class="flex items-center mr-2 text-gray-700 text-sm mr-3 cursor-pointer"
+              >
+                <svg :fill="post.likes.length > 0 ? '#f56565': 'none'" viewBox="0 0 24 24" class="text-red-500 w-4 h-4 mr-1" stroke="currentColor">
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+                  />
+                </svg>
+                <span>{{ post.likes.length }}</span>
               </div>
               <button
                 v-if="(post.user.uid === user.uid)"
@@ -63,8 +69,17 @@ import { mapActions, mapState } from "vuex";
 export default {
   name: "Inicio",
   methods: {
-    ...mapActions("posts", ["GET_POSTS", "DELETE_POST"]),
+    ...mapActions("posts", [
+      "GET_POSTS",
+      "GET_POST",
+      "DELETE_POST",
+      "LIKE_POST",
+    ]),
     ...mapActions("users", ["GET_USERS"]),
+    // async likePost(postId) {
+    //   await this.GET_POST(postId)
+    //   this.LIKE_POST(postId)
+    // }
   },
   created() {
     this.GET_USERS("all-users");

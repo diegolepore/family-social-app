@@ -18,7 +18,21 @@ export default {
 
     REMOVE_POST(state, postId) {
       state.posts = state.posts.filter((post) => post.id !== postId)
-    }
+    },
+
+    SET_LIKE(state, { id, uid }) {
+      const selectedPost = state.posts.find((post) => post.id === id)
+      state.posts[state.posts.indexOf(selectedPost)].likes.push(uid)
+      console.log(selectedPost)
+    },
+
+    REMOVE_LIKE(state, { id, uid }) {
+      const selectedPost = state.posts.find((post) => post.id === id)
+      const likes = state.posts[state.posts.indexOf(selectedPost)].likes
+      const index = likes.indexOf(uid)
+
+      likes.splice(index, 1)
+    },
   },
   actions: {
     GET_POSTS({commit, rootGetters}) {
@@ -46,7 +60,7 @@ export default {
     GET_POST({commit}, postId) {
       db.collection('posts').doc(postId).get()
         .then((item) => {
-          console.log(item.id, item.data())
+          // console.log(item.id, item.data())
           let post = item.data()
           post.id = item.id
           commit('SET_POST', post)
@@ -99,9 +113,55 @@ export default {
       .catch((err) => {
         console.error(err)
       })
+    },
+
+    LIKE_POST({commit, state, rootState}, postId) {
+
+      const { uid, likedPosts } = rootState.auth.user
+      const selectedPost = state.posts.find((post) => post.id === postId)
+      const { id, title, likes} = selectedPost
+
+      if(!likedPosts.includes(id)) {
+        db.collection('users').doc(uid).update({
+          likedPosts: [...likedPosts, id]
+        }).then(() => {
+          db.collection('posts').doc(postId).update({
+            likes: [...likes, uid],
+          }).then(() => {
+            commit('auth/SET_LIKED_POST', id, { root: true })
+            commit('SET_LIKE', { id, uid })
+          })      
+          .catch((err) => {
+            console.error(err)
+          })
+        })
+        .catch((err) => {
+          console.error(err)
+        })
+      } else {
+        console.log("You already liked this post")
+
+        let likedPostsFiltered = likedPosts.filter((post) => post !== id)
+        let likesFiltered = likes.filter((like) => like !== uid)
+
+        db.collection('users').doc(uid).update({
+          likedPosts: [...likedPostsFiltered]
+        }).then(() => {
+          db.collection('posts').doc(postId).update({
+            likes: [...likesFiltered],
+          }).then(() => {
+            commit('auth/REMOVE_LIKED_POST', id, { root: true })
+            commit('REMOVE_LIKE', { id, uid })
+          })      
+          .catch((err) => {
+            console.error(err)
+          })
+        })
+        .catch((err) => {
+          console.error(err)
+        })
+      }
     }
-
-
   },
   getters: {
 
