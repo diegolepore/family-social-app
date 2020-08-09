@@ -82,6 +82,32 @@ export default {
         .catch((err) => {
           console.error(err)
         })
+    },
+
+    UNFOLLOW_USER({dispatch, rootState}, payload) {
+      const { uid, following, email } = rootState.auth.user
+
+      const followingFiltered = following.filter((followingId) => followingId !== payload.uid)
+      const followersFiltered = payload.followers.filter((followerId) => followerId !== uid)
+      
+      db.collection('users').doc(uid).update({
+        following: [ ...followingFiltered ],
+        followingsLength: payload.followingsLength - 1
+      }).then(() => {
+        db.collection('users').doc(payload.uid).update({
+          followers: [ ...followersFiltered ],
+          followersLength: payload.followersLength - 1
+        }).then(() => {
+          dispatch('GET_USERS', 'users-following')
+          dispatch('GET_USERS', 'not-following-users')
+        })
+        .catch((err) => {
+          console.error(err)
+        })
+      })
+      .catch((err) => {
+        console.error(err)
+      })
     }
   },
   getters: {}

@@ -27,6 +27,7 @@
               <div class="flex justify-center my-4 px-6">
                 <!-- TODO: @click="UNFOLLOW_USER(user)" -->
                 <button
+                  @click="UNFOLLOW_USER(user)"
                   class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-full"
                   type="button"
                 >Dejar de seguir</button>
@@ -56,9 +57,6 @@
                 </div>
               </div>
             </div>
-
-            <div>Liked posts: {{ user.likedPosts }}</div>
-
           </div>
         </li>
       </ul>
@@ -118,8 +116,6 @@
             <div>
               <strong class="text-black">{{ user.followingsLength }}</strong> Siguiendo
             </div>
-
-            <div>Liked posts: {{ user.likedPosts }}</div>
           </div>
         </div>
       </li>
@@ -133,7 +129,7 @@ import { mapActions, mapState } from "vuex";
 export default {
   name: "Users",
   methods: {
-    ...mapActions("users", ["GET_USERS", "FOLLOW_USER"]),
+    ...mapActions("users", ["GET_USERS", "FOLLOW_USER", "UNFOLLOW_USER"]),
   },
   mounted() {
     this.GET_USERS("not-following-users");
