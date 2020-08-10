@@ -29,7 +29,7 @@
       </div>
 
       <div class="px-5 w-full mx-auto">
-        <p class="my-5">{{ post.body }}</p>
+        <p class="my-5" v-html="post.body"></p>
       </div>
     </div>
   </div>

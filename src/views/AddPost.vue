@@ -5,7 +5,7 @@
     </div>
     <form @submit.prevent="submitPost">
       <div
-        v-if="loading"
+        v-if="loadingState"
         class="loader ease-linear rounded-full border-8 border-t-8 border-gray-200 h-64 w-64"
       ></div>
 
@@ -36,7 +36,7 @@
         />
       </label>
 
-      <label class="block mb-4">
+      <!-- <label class="block mb-4">
         <span class="text-gray-700">Cuerpo del artículo</span>
         <textarea
           class="form-textarea mt-1 block w-full"
@@ -44,7 +44,19 @@
           placeholder="Escribe tu super artículo aquí"
           v-model="body"
         ></textarea>
-      </label>
+      </label> -->
+
+      <editor-menu-bar :editor="editor" v-slot="{ commands, isActive }">
+        <div class="menubar flex">
+          <button type="button" class="px-2" :class="{ 'is-active': isActive.bold() }" @click="commands.bold">
+            Bold
+          </button>
+          <button type="button" class="px-2" :class="{ 'is-active': isActive.strike() }" @click="commands.strike">
+            Strike
+          </button>
+        </div>
+      </editor-menu-bar>
+      <editor-content class="form-textarea mt-1 mb-6 block w-full" :editor="editor" />
 
       <label class="flex justify-end mb-4">
         <button
@@ -53,24 +65,97 @@
         >Publicar</button>
       </label>
     </form>
+    
+    <div class="actions">
+      <button class="button" @click="clearContent">
+        Clear Content
+      </button>
+      <button class="button" @click="setContent">
+        Set Content
+      </button>
+    </div>
+
+    <div class="export">
+      <h3>JSON</h3>
+      <pre><code v-html="json"></code></pre>
+
+      <h3>HTML</h3>
+      <pre><code>{{ html }}</code></pre>
+    </div>
   </div>
 </template>
 
 <script>
 import { mapActions, mapState } from "vuex";
 import { storage, db } from "@/plugins/firebase";
+import { Editor, EditorContent, EditorMenuBar, EditorMenuBubble } from 'tiptap';
+import {
+  Blockquote,
+  CodeBlock,
+  HardBreak,
+  Heading,
+  OrderedList,
+  BulletList,
+  ListItem,
+  TodoItem,
+  TodoList,
+  Bold,
+  Code,
+  Italic,
+  Link,
+  Strike,
+  Underline,
+  History,
+} from 'tiptap-extensions'
 
 export default {
   name: "AddPost",
+  components: {
+    EditorContent,
+    EditorMenuBar,
+    EditorMenuBubble
+  },
   data() {
     return {
       title: "",
       subtitle: "",
-      body: "",
       file: null,
       tempUrl: null,
-      loading: false,
+      loadingState: false,
       mainImage: null,
+      body: null,
+
+      editor: new Editor({
+        extensions: [
+          new Blockquote(),
+          new CodeBlock(),
+          new HardBreak(),
+          new Heading({ levels: [1, 2, 3] }),
+          new BulletList(),
+          new OrderedList(),
+          new ListItem(),
+          new TodoItem(),
+          new TodoList(),
+          new Bold(),
+          new Code(),
+          new Italic(),
+          new Link(),
+          new Strike(),
+          new Underline(),
+          new History(),
+        ],
+        content: `
+          <h1>Yay Headlines!</h1>
+          <p>All these <strong>cool tags</strong> are working now.</p>
+        `,
+        onUpdate: ({ getJSON, getHTML }) => {
+          this.json = getJSON()
+          this.html = getHTML()
+        },
+      }),
+
+      json: 'Update content to see changes',
+      html: 'Update content to see changes',
     };
   },
   computed: {
@@ -92,17 +177,17 @@ export default {
     },
 
     async submitPost() {
-      this.loading = true;
+      this.loadingState = true;
 
       const postData = {
         title: this.title,
         subtitle: this.subtitle,
-        body: this.body,
-        likes: []
+        body: this.html,
+        likes: [],
       };
 
       try {
-        if(this.file) {
+        if (this.file) {
           const refImage = storage
             .ref()
             .child(`${this.title}__${this.user.email}`)
@@ -110,16 +195,42 @@ export default {
           const res = await refImage.put(this.file);
           this.mainImage = await refImage.getDownloadURL();
         }
-        
-        this.ADD_POST({ ...postData, mainImage: this.mainImage});
-        
+
+        this.ADD_POST({ ...postData, mainImage: this.mainImage });
       } catch (error) {
         console.error(error);
       } finally {
-        this.loading = false;
+        this.loadingState = false;
         this.file = null;
       }
     },
+
+    clearContent() {
+      this.editor.clearContent(true)
+      this.editor.focus()
+    },
+    setContent() {
+      // you can pass a json document
+      this.editor.setContent({
+        type: 'doc',
+        content: [{
+          type: 'paragraph',
+          content: [
+            {
+              type: 'text',
+              text: 'This is some inserted text. 👋',
+            },
+          ],
+        }],
+      }, true)
+      // HTML string is also supported
+      // this.editor.setContent('<p>This is some inserted text. 👋</p>')
+      // this.editor.focus()
+    }
+  },
+
+  beforeDestroy() {
+    this.editor.destroy()
   },
 };
 </script>

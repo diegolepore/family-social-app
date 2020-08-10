@@ -20,7 +20,7 @@
           <div class="text-gray-900 font-bold text-xl mb-2">
             <router-link :to="{name: 'PostDetail', params: {id: post.id}}">{{ post.title }}</router-link>
           </div>
-          <p class="text-gray-700 text-base">{{ post.body }}</p>
+          <p class="text-gray-700 text-base" v-html="post.body"></p>
         </div>
         <div class="flex items-center">
           <div class="flex-1 flex items-center justify-between text-sm">
