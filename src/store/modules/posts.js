@@ -21,14 +21,16 @@ export default {
     },
 
     SET_LIKE(state, { id, uid }) {
-      const selectedPost = state.posts.find((post) => post.id === id)
-      state.posts[state.posts.indexOf(selectedPost)].likes.push(uid)
-      console.log(selectedPost)
+      // const selectedPost = state.posts.find((post) => post.id === id)
+      state.post = state.posts.find((post) => post.id === id)
+      state.posts[state.posts.indexOf(state.post)].likes.push(uid)
+      console.log(state.post)
     },
 
     REMOVE_LIKE(state, { id, uid }) {
-      const selectedPost = state.posts.find((post) => post.id === id)
-      const likes = state.posts[state.posts.indexOf(selectedPost)].likes
+      // const selectedPost = state.posts.find((post) => post.id === id)
+      state.post = state.posts.find((post) => post.id === id)
+      const likes = state.posts[state.posts.indexOf(state.post)].likes
       const index = likes.indexOf(uid)
 
       likes.splice(index, 1)
@@ -57,16 +59,27 @@ export default {
         })
     },
 
-    GET_POST({commit}, postId) {
-      db.collection('posts').doc(postId).get()
-        .then((item) => {
-          // console.log(item.id, item.data())
-          let post = item.data()
-          post.id = item.id
-          commit('SET_POST', post)
-        }).catch((err) => {
-          console.error(err)
-        })
+    async GET_POST({commit}, postId) {
+
+      try {
+        const res = await db.collection('posts').doc(postId).get()
+        let post = res.data()
+        post.id = res.id
+        commit('SET_POST', post)
+      } catch (error) {
+        console.error(error)
+      }
+      
+
+      // db.collection('posts').doc(postId).get()
+      //   .then((item) => {
+      //     // console.log(item.id, item.data())
+      //     let post = item.data()
+      //     post.id = item.id
+      //     commit('SET_POST', post)
+      //   }).catch((err) => {
+      //     console.error(err)
+      //   })
     },
 
     ADD_POST({commit, rootGetters}, post) {
@@ -119,7 +132,7 @@ export default {
 
       const { uid, likedPosts } = rootState.auth.user
       const selectedPost = state.posts.find((post) => post.id === postId)
-      const { id, title, likes} = selectedPost
+      const { id, likes } = selectedPost
 
       if(!likedPosts.includes(id)) {
         db.collection('users').doc(uid).update({
@@ -127,10 +140,10 @@ export default {
         }).then(() => {
           db.collection('posts').doc(postId).update({
             likes: [...likes, uid],
-          }).then(() => {
+          }).then((res) => {
             commit('auth/SET_LIKED_POST', id, { root: true })
             commit('SET_LIKE', { id, uid })
-          })      
+          })
           .catch((err) => {
             console.error(err)
           })

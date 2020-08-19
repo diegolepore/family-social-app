@@ -47,7 +47,7 @@
             class="block mt-4 lg:inline-block lg:mt-0 text-teal-200 hover:text-white mr-4"
             v-if="IS_USER_ACTIVE"
             :to="{name: 'AddPost'}"
-          >Nueva Entrada</router-link>
+          >Nuevo Post</router-link>
           <router-link
             class="block mt-4 lg:inline-block lg:mt-0 text-teal-200 hover:text-white mr-4"
             v-if="IS_USER_ACTIVE"

@@ -35,20 +35,12 @@
             </div>
 
             <div class="flex">
-              <div
-                @click="LIKE_POST(post.id)"
-                class="flex items-center mr-2 text-gray-700 text-sm mr-3 cursor-pointer"
-              >
-                <svg :fill="post.likes.length > 0 ? '#f56565': 'none'" viewBox="0 0 24 24" class="text-red-500 w-4 h-4 mr-1" stroke="currentColor">
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
-                  />
-                </svg>
-                <span>{{ post.likes.length }}</span>
-              </div>
+              <Like :post="post" />
+              <router-link
+                :to="{ name: 'EditPost', params: {id: post.id} }"
+                v-if="(post.user.uid === user.uid)"
+                class="bg-blue-500 hover:bg-blue-400 text-white font-bold mr-2 py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded"
+              >Editar artículo</router-link>
               <button
                 v-if="(post.user.uid === user.uid)"
                 @click="DELETE_POST(post.id)"
@@ -65,21 +57,20 @@
 <script>
 // @ is an alias to /src
 import { mapActions, mapState } from "vuex";
+import Like from "../components/Like";
 
 export default {
   name: "Inicio",
+  components: {
+    Like
+  },
   methods: {
     ...mapActions("posts", [
       "GET_POSTS",
       "GET_POST",
       "DELETE_POST",
-      "LIKE_POST",
     ]),
     ...mapActions("users", ["GET_USERS"]),
-    // async likePost(postId) {
-    //   await this.GET_POST(postId)
-    //   this.LIKE_POST(postId)
-    // }
   },
   created() {
     this.GET_USERS("all-users");

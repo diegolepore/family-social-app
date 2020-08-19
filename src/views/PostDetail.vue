@@ -8,12 +8,14 @@
 
       <div class="w-full text-gray-500 px-5 pb-5 pt-2">{{ post.subtitle }}</div>
 
-      <div class="mx-5">
+      <div class="mx-5 my-2">
         <img
           :v-if="post.mainImage"
           :src="post.mainImage"
         />
       </div>
+
+      <Like :post="post" />
 
       <!-- <div class="w-full text-gray-600 text-normal mx-5">
         <p
@@ -21,7 +23,7 @@
         >Georgia Gov. Brian Kemp speaks to the media during a press conference. | Kevin C. Cox/Getty Images</p>
       </div>-->
 
-      <div class="w-full text-gray-600 font-thin italic px-5 pt-3">
+      <div v-if="post.user" class="w-full text-gray-600 font-thin italic px-5 pt-3">
         By
         <strong class="text-gray-700">{{ post.user.name }} {{ post.user.lastname }}</strong>
         <br />07/17/2020 09:57 AM EDT
@@ -37,20 +39,27 @@
 
 <script>
 import { mapState, mapActions } from "vuex";
+import Like from "../components/Like";
+
 export default {
+  components: {
+    Like
+  },
   data() {
     return {
-      postId: this.$route.params.id,
+      postId: this.$route.params.id
     };
   },
   computed: {
     ...mapState("posts", ["post"]),
   },
-  created() {
+  created() {    
+    this.GET_USERS("all-users");
     this.GET_POST(this.postId);
   },
   methods: {
-    ...mapActions("posts", ["GET_POST"]),
+    ...mapActions("posts", ["GET_POST", "LIKE_POST"]),
+    ...mapActions("users", ["GET_USERS"]),
   },
 };
 </script>

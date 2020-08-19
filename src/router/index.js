@@ -13,7 +13,7 @@ const routes = [
     meta: { requiresAuth: true }
   },
   {
-    path: '/edit-post:id',
+    path: '/edit-post/:id',
     name: 'EditPost',
     component: () => import(/* webpackChunkName: "edit-post" */ '../views/EditPost.vue'),
     meta: { requiresAuth: true }
