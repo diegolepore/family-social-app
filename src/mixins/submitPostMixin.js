@@ -1,6 +1,15 @@
 import { storage } from "@/plugins/firebase";
 
 export const submitPostMixin = {
+  data() {
+    return {
+      file: null,
+      tempUrl: null,
+      loadingState: false,
+      mainImage: null,
+    }
+  },
+
   methods: {
     async submitPost(postData, vuexAction) {
       this.loadingState = true;
@@ -9,7 +18,7 @@ export const submitPostMixin = {
         if (this.file) {
           const refImage = storage
             .ref()
-            .child(`${this.title}__${this.user.email}`)
+            .child(`${postData.title}__${this.user.email}`)
             .child("Post main image");
           const res = await refImage.put(this.file);
           this.mainImage = await refImage.getDownloadURL();

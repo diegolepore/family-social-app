@@ -132,10 +132,6 @@ export default {
         body: "",
         likes: [],
       },
-      file: null,
-      tempUrl: null,
-      loadingState: false,
-      mainImage: null,
 
       editor: new Editor({
         extensions: [

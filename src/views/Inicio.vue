@@ -25,10 +25,9 @@
         <div class="flex items-center">
           <div class="flex-1 flex items-center justify-between text-sm">
             <div class="flex items-center">
-              <div
-                class="rounded-full w-8 h-8 mr-3"
-                :style="`background: url(${post.user.photo}) center; background-size: cover;`"
-              ></div>
+              <div class="rounded-full w-8 h-8 mr-3 overflow-hidden flex">
+              <img :src="post.user.photo" height="32" alt="">
+              </div>
               <p
                 class="text-sm text-gray-600 flex items-center"
               >{{ post.user.name }} {{ post.user.lastname }}</p>

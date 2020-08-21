@@ -25,7 +25,8 @@ export default {
     GET_USERS({commit, dispatch, rootState}, payload) {
       
       db.collection('users').orderBy("name").limit(50).get().then((res) => {
-        const currentUserUid = rootState.auth.user.uid
+        const authUser = rootState.auth.user
+        const currentUserUid = authUser.uid
         let allUsers = []
         let usersFollowing = []
         let notFollowingUsers = []
@@ -53,6 +54,7 @@ export default {
           commit('SET_ALL_USERS', allUsers)
         }
 
+        dispatch('auth/GET_USER', { user: authUser, isAuthProcess: false }, { root: true })
         dispatch('posts/GET_POSTS', null, {root:true})
 
       }).catch((err) => {
@@ -62,7 +64,6 @@ export default {
 
     FOLLOW_USER({dispatch, rootState}, payload) {
       const { uid, following, email } = rootState.auth.user
-
       
         db.collection('users').doc(uid).update({
           following: [ ...following, payload.uid ],

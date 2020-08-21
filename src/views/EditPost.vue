@@ -3,13 +3,12 @@
     <div class="mb-6">
       <h1 class="text-3xl font-bold">Editar post</h1>
     </div>
-    <!-- <div>{{ post }}</div> -->
 
     <form @submit.prevent="submitPost(post, 'EDIT_POST')">
-      <!-- <div
+      <div
         v-if="loadingState"
         class="loader ease-linear rounded-full border-8 border-t-8 border-gray-200 h-64 w-64"
-      ></div>-->
+      ></div>
 
       <input type="file" class="hidden" ref="uploadImageBtn" @change="searchImage($event)" /> 
 
@@ -129,9 +128,6 @@ export default {
   data() {
     return {
       postId: this.$route.params.id,
-      tempUrl: null,
-      file: null,
-      mainImage: null,
 
       editor: new Editor({
         extensions: [

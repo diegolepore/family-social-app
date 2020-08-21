@@ -51,6 +51,16 @@ export default {
         })
     },
 
+    // UPDATE_AUTH_USER({commit, dispatch}, uid) {
+    //   db.collection('users').doc(uid).get()
+    //     .then((res) => {
+    //       dispatch('GET_USER', {...res, isAuthProcess: false })
+    //     })
+    //     .catch((err) => {
+    //       commit('SET_ERROR', err)
+    //     })
+    // },
+
     CREATE_USER({commit, dispatch}, payload) {
       auth.createUserWithEmailAndPassword(payload.email, payload.pass)
         .then((res) => {
