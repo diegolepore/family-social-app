@@ -5,7 +5,7 @@
     </div>
     <!-- <div>{{ post }}</div> -->
 
-    <form @submit.prevent="editPost(post)">
+    <form @submit.prevent="submitPost(post, 'EDIT_POST')">
       <!-- <div
         v-if="loadingState"
         class="loader ease-linear rounded-full border-8 border-t-8 border-gray-200 h-64 w-64"
@@ -97,7 +97,6 @@
 
 <script>
 import { mapActions, mapState } from "vuex";
-import { storage } from "@/plugins/firebase";
 import { Editor, EditorContent, EditorMenuBar, EditorMenuBubble } from 'tiptap';
 import {
   Blockquote,
@@ -117,6 +116,7 @@ import {
   Underline,
   History,
 } from 'tiptap-extensions'
+import { submitPostMixin } from '../mixins/submitPostMixin'
 
 export default {
   name: "EditPost",
@@ -125,6 +125,7 @@ export default {
     EditorMenuBar,
     EditorMenuBubble
   },
+  mixins: [submitPostMixin],
   data() {
     return {
       postId: this.$route.params.id,
@@ -178,29 +179,6 @@ export default {
       this.mainImage = mainImage
       console.log(body)
     },
-
-    async editPost(post) {
-      this.loadingState = true;
-
-      try {
-
-        if (this.file) {
-          const refImage = storage
-            .ref()
-            .child(`${this.post.title}__${this.user.email}`)
-            .child("Post main image");
-          const res = await refImage.put(this.file);
-          this.mainImage = await refImage.getDownloadURL();
-        }
-
-        this.EDIT_POST({ ...post, mainImage: this.mainImage });
-      } catch (error) {
-        console.error(error);
-      } finally {
-        this.loadingState = false;
-        this.file = null;
-      }
-    }
   },
   computed: {
     ...mapState("posts", ["post"]),

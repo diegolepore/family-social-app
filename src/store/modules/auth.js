@@ -69,7 +69,7 @@ export default {
     LOG_IN({commit, dispatch}, payload) {
       auth.signInWithEmailAndPassword(payload.email, payload.pass)
         .then((res) => {
-          dispatch('GET_USER', {...res, isAuthProcess: true })
+          dispatch('GET_USER', {...res, isAuthProcess: true });
           dispatch('users/GET_USERS', 'all-users', {root:true});
         })
         .catch((err) => {

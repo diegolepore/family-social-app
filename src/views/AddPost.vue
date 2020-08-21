@@ -3,7 +3,7 @@
     <div class="mb-6">
       <h1 class="text-3xl font-bold">Nuevo post</h1>
     </div>
-    <form @submit.prevent="submitPost">
+    <form @submit.prevent="submitPost(postData, 'ADD_POST')">
       <div
         v-if="loadingState"
         class="loader ease-linear rounded-full border-8 border-t-8 border-gray-200 h-64 w-64"
@@ -36,7 +36,7 @@
           class="form-input mt-1 block w-full"
           type="text"
           placeholder="Este es el título"
-          v-model="title"
+          v-model="postData.title"
         />
       </label>
 
@@ -46,7 +46,7 @@
           class="form-input mt-1 block w-full"
           type="text"
           placeholder="Y aquí el subtítulo"
-          v-model="subtitle"
+          v-model="postData.subtitle"
         />
       </label>
 
@@ -89,31 +89,12 @@
         >Publicar</button>
       </label>
     </form>
-    
-    <!-- <div class="actions">
-      <button class="button" @click="clearContent">
-        Clear Content
-      </button>
-      <button class="button" @click="setContent">
-        Set Content
-      </button>
-    </div>
-
-    <div class="export">
-      <h3>JSON</h3>
-      <pre><code v-html="json"></code></pre>
-
-      <h3>HTML</h3>
-      <pre><code>{{ html }}</code></pre>
-    </div> -->
-
   </div>
   
 </template>
 
 <script>
 import { mapActions, mapState } from "vuex";
-import { storage, db } from "@/plugins/firebase";
 import { Editor, EditorContent, EditorMenuBar, EditorMenuBubble } from 'tiptap';
 import {
   Blockquote,
@@ -133,6 +114,7 @@ import {
   Underline,
   History,
 } from 'tiptap-extensions'
+import { submitPostMixin } from '../mixins/submitPostMixin'
 
 export default {
   name: "AddPost",
@@ -141,15 +123,19 @@ export default {
     EditorMenuBar,
     EditorMenuBubble
   },
+  mixins: [submitPostMixin],
   data() {
     return {
-      title: "",
-      subtitle: "",
+      postData: {
+        title: "",
+        subtitle: "",
+        body: "",
+        likes: [],
+      },
       file: null,
       tempUrl: null,
       loadingState: false,
       mainImage: null,
-      body: null,
 
       editor: new Editor({
         extensions: [
@@ -174,14 +160,10 @@ export default {
           <h1>Yay Headlines!</h1>
           <p>All these <strong>cool tags</strong> are working now.</p>
         `,
-        onUpdate: ({ getJSON, getHTML }) => {
-          this.json = getJSON()
-          this.html = getHTML()
+        onUpdate: ({ getHTML }) => {
+          this.postData.body = getHTML()
         },
       }),
-
-      json: 'Update content to see changes',
-      html: 'Update content to see changes',
     };
   },
   computed: {
@@ -201,55 +183,6 @@ export default {
         this.tempUrl = e.target.result;
       };
     },
-
-    async submitPost() {
-      this.loadingState = true;
-
-      const postData = {
-        title: this.title,
-        subtitle: this.subtitle,
-        body: this.html,
-        likes: [],
-      };
-
-      try {
-        if (this.file) {
-          const refImage = storage
-            .ref()
-            .child(`${this.title}__${this.user.email}`)
-            .child("Post main image");
-          const res = await refImage.put(this.file);
-          this.mainImage = await refImage.getDownloadURL();
-        }
-
-        this.ADD_POST({ ...postData, mainImage: this.mainImage });
-      } catch (error) {
-        console.error(error);
-      } finally {
-        this.loadingState = false;
-        this.file = null;
-      }
-    },
-
-    clearContent() {
-      this.editor.clearContent(true)
-      this.editor.focus()
-    },
-    setContent() {
-      // you can pass a json document
-      this.editor.setContent({
-        type: 'doc',
-        content: [{
-          type: 'paragraph',
-          content: [
-            {
-              type: 'text',
-              text: 'This is some inserted text. 👋',
-            },
-          ],
-        }],
-      }, true)
-    }
   },
 
   beforeDestroy() {

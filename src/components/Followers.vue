@@ -47,12 +47,6 @@ export default {
           this.followers.push(user);
         }
       });
-
-      // const followersArr = this.users.filter(
-      //   (user) => this.user.followers.indexOf(user.uid) != -1
-      // );
-
-      // console.log(followersArr);
     },
   },
 };

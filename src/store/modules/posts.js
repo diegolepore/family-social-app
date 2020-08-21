@@ -21,14 +21,12 @@ export default {
     },
 
     SET_LIKE(state, { id, uid }) {
-      // const selectedPost = state.posts.find((post) => post.id === id)
       state.post = state.posts.find((post) => post.id === id)
       state.posts[state.posts.indexOf(state.post)].likes.push(uid)
       console.log(state.post)
     },
 
     REMOVE_LIKE(state, { id, uid }) {
-      // const selectedPost = state.posts.find((post) => post.id === id)
       state.post = state.posts.find((post) => post.id === id)
       const likes = state.posts[state.posts.indexOf(state.post)].likes
       const index = likes.indexOf(uid)

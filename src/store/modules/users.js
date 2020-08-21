@@ -32,11 +32,11 @@ export default {
         res.forEach((doc) => {
           if(currentUserUid != doc.data().uid ) {
             if (payload == 'not-following-users') {
-              if(!doc.data().followers.includes(currentUserUid)) {
+              if (!doc.data().followers.includes(currentUserUid)) {
                 notFollowingUsers.push(doc.data())
               }
             } else if (payload == 'users-following') {
-              if(doc.data().followers.includes(currentUserUid)) {
+              if (doc.data().followers.includes(currentUserUid)) {
                 usersFollowing.push(doc.data())
               }
             } else if (payload == 'all-users'){
