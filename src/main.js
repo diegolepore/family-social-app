@@ -7,7 +7,7 @@ import store from './store'
 Vue.config.productionTip = false
 
 import { auth } from './plugins/firebase'
-import "@/assets/styles/main.css";
+import "@/assets/styles/main.scss";
 
 auth.onAuthStateChanged((user)=> {
   if (user) {

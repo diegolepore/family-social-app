@@ -35,30 +35,27 @@ export default {
     },
   },
   actions: {
-    GET_POSTS({commit, rootGetters}) {
+    async GET_POSTS({commit, rootGetters}) {
       const posts = []
       const { following, uid } = rootGetters['auth/GET_AUTH_ITEM']('user')
 
-      db.collection('posts').get()
-        .then((res) => {
-          res.forEach((doc) => {
-            if( following.includes(doc.data().user.uid) || doc.data().user.uid === uid ) {
-              console.log(doc.data())
-              const data = doc.data()
-              data.id = doc.id
-              posts.push(data)
-            }
-          })
+      try {
+        const res = await db.collection('posts').get()     
+        res.forEach((doc) => {
+          if( following.includes(doc.data().user.uid) || doc.data().user.uid === uid ) {
+            const data = doc.data()
+            data.id = doc.id
+            posts.push(data)
+          }
+        })
 
-          commit('SET_POSTS', posts)
-        })
-        .catch((err) => {
-          console.error(err)
-        })
+        commit('SET_POSTS', posts)   
+      } catch (error) {
+        console.error(error)
+      }
     },
 
     async GET_POST({commit}, postId) {
-
       try {
         const res = await db.collection('posts').doc(postId).get()
         let post = res.data()
@@ -67,17 +64,6 @@ export default {
       } catch (error) {
         console.error(error)
       }
-      
-
-      // db.collection('posts').doc(postId).get()
-      //   .then((item) => {
-      //     // console.log(item.id, item.data())
-      //     let post = item.data()
-      //     post.id = item.id
-      //     commit('SET_POST', post)
-      //   }).catch((err) => {
-      //     console.error(err)
-      //   })
     },
 
     ADD_POST({commit, rootGetters}, post) {

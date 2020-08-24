@@ -22,9 +22,10 @@ export default {
     }
   },
   actions: {
-    GET_USERS({commit, dispatch, rootState}, payload) {
-      
-      db.collection('users').orderBy("name").limit(50).get().then((res) => {
+    async GET_USERS({commit, dispatch, rootState}, payload) {
+
+      try {
+        const res = await db.collection('users').orderBy("name").limit(50).get()
         const authUser = rootState.auth.user
         const currentUserUid = authUser.uid
         let allUsers = []
@@ -54,16 +55,16 @@ export default {
           commit('SET_ALL_USERS', allUsers)
         }
 
+        // Get the auth user
         dispatch('auth/GET_USER', { user: authUser, isAuthProcess: false }, { root: true })
-        dispatch('posts/GET_POSTS', null, {root:true})
 
-      }).catch((err) => {
-        console.error(err)
-      })
+      } catch (error) {
+        console.error(error)
+      }
     },
 
     FOLLOW_USER({dispatch, rootState}, payload) {
-      const { uid, following, email } = rootState.auth.user
+      const { uid, following } = rootState.auth.user
       
         db.collection('users').doc(uid).update({
           following: [ ...following, payload.uid ],
@@ -75,6 +76,7 @@ export default {
           }).then(() => {
             dispatch('GET_USERS', 'users-following')
             dispatch('GET_USERS', 'not-following-users')
+            dispatch('posts/GET_POSTS', null, { root: true })
           })
           .catch((err) => {
             console.error(err)
@@ -101,6 +103,7 @@ export default {
         }).then(() => {
           dispatch('GET_USERS', 'users-following')
           dispatch('GET_USERS', 'not-following-users')
+          dispatch('posts/GET_POSTS', null, { root: true })
         })
         .catch((err) => {
           console.error(err)
