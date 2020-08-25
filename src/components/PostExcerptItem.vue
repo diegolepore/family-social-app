@@ -13,22 +13,27 @@
     >
       <div class="mb-8">
         <div v-if="(post.user.uid === user.uid)" class="flex justify-end">
-          <div class="PostExcerpt__options relative">
-            <button class="PostExcerpt__options-button" type="button">...</button>
-            <div class="PostExcerpt__options-dropdown absolute right-0">
-              <ul>
-                <li>
-                  <router-link
-                    :to="{ name: 'EditPost', params: {id: post.id} }"
-                  >Editar artículo</router-link>
-                </li>
-                <li>
-                  <button
-                    @click="DELETE_POST(post.id)"
-                  >Eliminar artículo</button>
-                </li>
-              </ul>
-            </div>
+          <div v-click-outside="{method: clickedOutside}" class="PostExcerpt__options relative">
+            <button
+              class="PostExcerpt__options-button"
+              data-options-button
+              type="button"
+              @click="showDropdown = !showDropdown"
+            >...</button>
+            <ul
+              class="PostExcerpt__options-dropdown absolute right-0 border border-gray-400 rounded"
+              v-if="showDropdown"
+            >
+              <li class="PostExcerpt__options-item">
+                <router-link
+                  class="block"
+                  :to="{ name: 'EditPost', params: {id: post.id} }"
+                >Editar artículo</router-link>
+              </li>
+              <li class="PostExcerpt__options-item">
+                <button class="w-full text-left" @click="DELETE_POST(post.id)">Eliminar artículo</button>
+              </li>
+            </ul>
           </div>
         </div>
         <div class="text-gray-900 font-bold text-xl mb-2">
@@ -40,7 +45,7 @@
         <div class="flex-1 flex items-center justify-between text-sm">
           <div class="flex items-center">
             <div class="rounded-full w-8 h-8 mr-3 overflow-hidden flex">
-            <img :src="post.user.photo" height="32" alt="">
+              <img :src="post.user.photo" height="32" alt />
             </div>
             <p
               class="text-sm text-gray-600 flex items-center"
@@ -49,16 +54,6 @@
 
           <div class="flex">
             <Like :post="post" />
-            <router-link
-              :to="{ name: 'EditPost', params: {id: post.id} }"
-              v-if="(post.user.uid === user.uid)"
-              class="bg-blue-500 hover:bg-blue-400 text-white font-bold mr-2 py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded"
-            >Editar artículo</router-link>
-            <button
-              v-if="(post.user.uid === user.uid)"
-              @click="DELETE_POST(post.id)"
-              class="bg-red-500 hover:bg-red-400 text-white font-bold py-2 px-4 border-b-4 border-red-700 hover:border-red-500 rounded"
-            >Eliminar artículo</button>
           </div>
         </div>
       </div>
@@ -69,32 +64,55 @@
 <script>
 import { mapActions, mapState } from "vuex";
 import Like from "../components/Like";
+import clickOutside from "../directives/clickOutside";
 
 export default {
   components: {
     Like,
   },
+  data() {
+    return {
+      showDropdown: false,
+    };
+  },
+  directives: {
+    clickOutside,
+  },
   props: {
     post: {
       type: Object,
-      default: () => ({})
-    }
+      default: () => ({}),
+    },
   },
   methods: {
     ...mapActions("posts", ["DELETE_POST"]),
+    clickedOutside() {
+      console.log("clicked outside 🕹")
+      this.showDropdown = false;
+    },
   },
   computed: {
     ...mapState("auth", ["user"]),
-  }
-}
+  },
+};
 </script>
 
 <style lang="scss" scoped>
-  .PostExcerpt {
-    &__options {
-      &-dropdown {
-        width: 100px;
+.PostExcerpt {
+  &__options {
+    &-dropdown {
+      background-color: #e2e8f0;
+      overflow: hidden;
+      width: 150px;
+    }
+    &-item {
+      font-size: 12px;
+      padding: 5px 10px;
+
+      &:hover {
+        background-color: #ebf0f7;
       }
     }
   }
+}
 </style>
