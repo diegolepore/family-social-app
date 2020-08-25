@@ -23,7 +23,6 @@ export default {
     SET_LIKE(state, { id, uid }) {
       state.post = state.posts.find((post) => post.id === id)
       state.posts[state.posts.indexOf(state.post)].likes.push(uid)
-      console.log(state.post)
     },
 
     REMOVE_LIKE(state, { id, uid }) {
@@ -78,11 +77,8 @@ export default {
         }
       }
 
-      console.log("Formattedpost: ", formattedPost)
-
       db.collection('posts').add(formattedPost)
       .then((res) => {
-        console.log('Post successfully added!', res)
         router.push({name: 'Inicio'})
       })
       .catch((err) => {
@@ -93,7 +89,6 @@ export default {
     DELETE_POST({commit}, postId) {
       db.collection('posts').doc(postId).delete()
         .then((res) => {
-          console.log('Post successfully deleted!', res)
           commit('REMOVE_POST', postId)
         })
         .catch((err) => {
@@ -104,7 +99,6 @@ export default {
     EDIT_POST({commit}, post) {
       db.collection('posts').doc(post.id).update(post)
       .then((res) => {
-        console.log('Post successfully edited!', res)
         router.push({name: 'Inicio'})
       })
       .catch((err) => {
@@ -136,7 +130,6 @@ export default {
           console.error(err)
         })
       } else {
-        console.log("You already liked this post")
 
         let likedPostsFiltered = likedPosts.filter((post) => post !== id)
         let likesFiltered = likes.filter((like) => like !== uid)

@@ -87,7 +87,6 @@ export default {
   methods: {
     ...mapActions("posts", ["DELETE_POST"]),
     clickedOutside() {
-      console.log("clicked outside 🕹")
       this.showDropdown = false;
     },
   },

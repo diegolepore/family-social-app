@@ -106,13 +106,11 @@ export default {
   },
   methods: {
     searchImage(event) {
-      console.log(event.target.files[0]);
       this.file = event.target.files[0];
 
       const reader = new FileReader();
       reader.readAsDataURL(this.file);
       reader.onload = (e) => {
-        console.log(e.target.result);
         this.tempUrl = e.target.result;
       };
     },
@@ -127,9 +125,7 @@ export default {
           .child("profile image");
 
         const res = await refImage.put(this.file);
-
         const urlDescarga = await refImage.getDownloadURL();
-        console.log(urlDescarga);
 
         this.user.photo = urlDescarga;
 

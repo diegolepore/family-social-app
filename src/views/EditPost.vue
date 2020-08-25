@@ -158,13 +158,11 @@ export default {
     ...mapActions("posts", ["GET_POST", "EDIT_POST"]),
 
     searchImage(event) {
-      console.log(event.target.files[0]);
       this.file = event.target.files[0];
 
       const reader = new FileReader();
       reader.readAsDataURL(this.file);
       reader.onload = (e) => {
-        console.log(e.target.result);
         this.tempUrl = e.target.result;
       };
     },
@@ -173,7 +171,6 @@ export default {
       // you can pass a json document
       this.editor.setContent(body, true)
       this.mainImage = mainImage
-      console.log(body)
     },
   },
   computed: {
