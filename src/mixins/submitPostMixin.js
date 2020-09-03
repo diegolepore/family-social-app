@@ -20,7 +20,7 @@ export const submitPostMixin = {
             .ref()
             .child(`${postData.title}__${this.user.email}`)
             .child("Post main image");
-          const res = await refImage.put(this.file);
+          // const res = await refImage.put(this.file);
           this.mainImage = await refImage.getDownloadURL();
         }
     
